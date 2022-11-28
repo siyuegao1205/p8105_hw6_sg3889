@@ -67,3 +67,36 @@ homicide_sub = homicide %>%
   filter(victim_race %in% c("Black", "White")) %>% 
   mutate(victim_age = as.numeric(victim_age))
 ```
+
+### Logistic Regression
+
+```{r}
+fit = 
+  homicide_sub %>% 
+  filter(city_state == "Baltimore, MD") %>% 
+  mutate(
+    status = fct_relevel(status, "unresolved")
+  ) %>% 
+  glm(status ~ victim_age + victim_sex + victim_race, data = ., family = "binomial")
+```
+
+Use `broom::tidy()` to extract the results of logistic regression.
+
+```{r}
+fit %>% 
+  broom::tidy() %>% 
+  knitr::kable(
+    col.names = c("Term", "Estimated", "Std.Error", "Statistic", "p-value")    
+  )
+
+confint(fit) %>% 
+  knitr::kable(digits = 3)
+```
+
+To get the estimate and confidencee interval of the adjusted **odds ratio**, we need to exponentiate the coefficient and the confidence interval.
+
+```{r}
+exp(cbind(coef(fit), confint(fit))) %>% 
+  knitr::kable(digits = 3)
+```
+
