@@ -35,6 +35,8 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ## Problem 2
 
+### Data Cleaning
+
 Import the data.
 
 ```{r}
@@ -49,12 +51,19 @@ homicide = homicide %>%
     state = str_to_upper(state),
     city_state = str_c(city, ", ", state),
     status = case_when(
-      disposition == "Closed by arrest"      ~ "solved",
-      disposition == "Closed without arrest" ~ "unsolved",
-      disposition == "Open/No arrest"        ~ "unsolved",
+      disposition == "Closed by arrest"      ~ "resolved",
+      disposition == "Closed without arrest" ~ "unresolved",
+      disposition == "Open/No arrest"        ~ "unresolved",
       TRUE                                   ~ ""
     )
   ) %>% 
   filter(!(city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")))
 ```
 
+Limit the analysis to those whom `victim_race` is `white` or `black`. Change `victim_age` into numeric.
+
+```{r}
+homicide_sub = homicide %>% 
+  filter(victim_race %in% c("Black", "White")) %>% 
+  mutate(victim_age = as.numeric(victim_age))
+```
