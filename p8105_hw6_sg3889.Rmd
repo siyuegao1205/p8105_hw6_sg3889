@@ -68,7 +68,7 @@ homicide_sub = homicide %>%
   mutate(victim_age = as.numeric(victim_age))
 ```
 
-### Logistic Regression
+### Logistic Regression for Baltimore, MD
 
 ```{r}
 fit = 
@@ -99,4 +99,6 @@ To get the estimate and confidencee interval of the adjusted **odds ratio**, we 
 exp(cbind(coef(fit), confint(fit))) %>% 
   knitr::kable(digits = 3)
 ```
+
+The adjusted odds ratio for solving homicides comparing male victims to female victims is 0.426, with a 95% confidence interval of (0.324, 0.558), keeping all other variables fixed.
 
