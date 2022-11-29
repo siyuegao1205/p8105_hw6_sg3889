@@ -164,3 +164,5 @@ ggsave(
 knitr::include_graphics("results/estimate_plot.png")
 ```
 
+Among the `r nrow(homicide_nest)` cities in the dataset, New York, NY has the lowest estimated OR for solving homicide comparing male victims to female victims while keeping all other variables fixed, while Albuquerque, NM, has the highest, though with a much wider confidence interval compared to New York, NY, indicating less precision in the estimated OR for Albuquerque, NM, than that of New York, NY.
+
