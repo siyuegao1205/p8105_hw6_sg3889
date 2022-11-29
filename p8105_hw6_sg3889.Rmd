@@ -90,7 +90,7 @@ fit %>%
     lower_bound = exp(estimate - 1.96 * std.error),
     upper_bound = exp(estimate + 1.96 * std.error)
   ) %>% 
-  select(term, log_OR = estimate, OR, lower_bound, upper_bound) %>% 
+  select(term, log_OR = estimate, OR, lower_bound, upper_bound) %>%
   knitr::kable(
     digits = 3,
     col.names = c("Term", "log(OR)", "Odds Ratio", "95% Lower", "95% Upper")    
@@ -101,4 +101,34 @@ The adjusted odds ratio for solving homicides comparing male victims to female v
 
 ### Logistic Regression on Each City
 
+Run `glm` for each of the cities in the dataset and extract the adjusted odds ratio and CI for solving homicides comparing male victims to female victims by `map()`.
+
+```{r}
+homicide_nest = homicide_sub %>% 
+  mutate(
+    status = fct_relevel(status, "unresolved")
+  ) %>% 
+  nest(df = -city_state)
+
+fit = homicide_nest %>% 
+  mutate(
+    models = map(.x = df, ~ glm(status ~ victim_age + victim_sex + victim_race, data = .x, family = "binomial")),
+    results = map(models, broom::tidy)
+  ) %>% 
+  select(city_state, results) %>% 
+  unnest(results) %>% 
+  mutate(
+    OR = exp(estimate),
+    lower_bound = exp(estimate - 1.96 * std.error),
+    upper_bound = exp(estimate + 1.96 * std.error)
+  ) %>% 
+  filter(term == "victim_sexMale") %>% 
+  select(city_state, log_OR = estimate, OR, lower_bound, upper_bound)
+
+fit %>% 
+  knitr::kable(
+    digits = 3,
+    col.names = c("City, State", "log(OR)", "Odds Ratio", "95% Lower", "95% Upper")  
+  )
+```
 
