@@ -132,3 +132,35 @@ fit %>%
   )
 ```
 
+Make a plot showing the estimated ORs and CIs for each city.
+
+```{r}
+estimate_ci_plot = fit %>% 
+  mutate(
+    city_state = fct_reorder(city_state, OR)
+  ) %>% 
+  ggplot(aes(x = city_state, y = OR)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower_bound, ymax = upper_bound)) +
+  labs(
+    x = "City, State",
+    y = "Estimated Adjusted OR\nwith 95% Confidence Interval",
+    title = "Estimated Adjusted OR for Solving Homicides Comparing Male Victims to Female Victims\nwith 95% Confidence Interval in Each City"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90),
+    axis.title = element_text(face = "bold")
+  )
+
+ggsave(
+  estimate_ci_plot,
+  filename = "results/estimate_plot.png",
+  width = 20,
+  height = 16,
+  units = "cm",
+  bg = "white"
+)
+
+knitr::include_graphics("results/estimate_plot.png")
+```
+
