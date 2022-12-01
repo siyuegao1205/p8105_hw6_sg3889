@@ -229,7 +229,35 @@ birthweight %>%
   labs(
     x = "Fitted Values of Birth Weight",
     y = "Residuals",
+    color = "Residuals",
     title = "Model Residuals vs Fitted Values of Birth Weight"
+  )
+```
+
+### Comparison across Models by Cross Validation
+
+*   One using length at birth (`blength`) and gestational age (`gaweeks`) as predictors (main effects only)
+*   One using head circumference (`bhead`), length (`blength`), sex (`babysex`), and all interactions (including the three-way interaction) between these
+
+```{r}
+cv_df = 
+  crossv_mc(birthweight, 100) %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble)
+  ) 
+
+cv_df = 
+  cv_df %>% 
+  mutate(
+    hypothesized_fits = map(.x = train, ~ lm(bwt ~ fincome + gaweeks + momage + parity + ppbmi + smoken, data = .x)),
+    main_effect_fits  = map(.x = train, ~ lm(bwt ~ blength + gaweeks, data = .x)),
+    interaction_fits  = map(.x = train, ~ lm(bwt ~ bhead * blength * babysex , data = .x))
+  ) %>% 
+  mutate(
+    rmse_hypothesized = map2_dbl(.x = hypothesized_fits, .y = test, ~ rmse(model = .x, data = .y)),
+    rmse_main_effect  = map2_dbl(.x = main_effect_fits,  .y = test, ~ rmse(model = .x, data = .y)),
+    rmse_interaction  = map2_dbl(.x = interaction_fits,  .y = test, ~ rmse(model = .x, data = .y))
   )
 ```
 
