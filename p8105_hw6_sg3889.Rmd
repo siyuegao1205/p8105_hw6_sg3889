@@ -201,3 +201,11 @@ Number of missing for each variable equals to 0 - no missing data in the current
 
 The tidied dataset contains observations on `r nrow(birthweight)` children. The data include `r ncol(birthweight)` variables that might have influence on a child's birth weight. These variables are primarily body measurement of baby and mother (such as, baby's head circumference at birth, baby's length, baby's  birth weight, mother's weight at delivery, etc.), in addition to some demographic information of both babies and the index parents (such as, sex of child, race of parent, etc.).
 
+### Fit a Linear Regression Model
+
+Based on former knowledge, genetics, age of the parent, length of pregnancy, mother's habits, socioeconomic status and demographic of index parents might have influences on birth weight of a baby. Related to the variables which are in the dataset, I hypothesized that family monthly income (`fincome`), gestational age in weeks (`gaweeks`), mother’s age at delivery (`momage`), number of live births prior to this pregnancy (`parity`), mother’s pre-pregnancy BMI (`ppbmi`), and average number of cigarettes smoked per day during pregnancy (`smoken`) as some predictors in the model estimating birth weight.
+
+```{r}
+linear_model = lm(bwt ~ fincome + gaweeks + momage + parity + ppbmi + smoken, data = birthweight)
+```
+
