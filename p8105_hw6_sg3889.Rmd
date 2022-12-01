@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 ```{r}
 library(tidyverse)
 library(labelled)
+library(modelr)
 ```
 
 
@@ -207,5 +208,28 @@ Based on former knowledge, genetics, age of the parent, length of pregnancy, mot
 
 ```{r}
 linear_model = lm(bwt ~ fincome + gaweeks + momage + parity + ppbmi + smoken, data = birthweight)
+
+linear_model %>% 
+  broom::tidy() %>% 
+  select(term, estimate, p.value) %>% 
+  knitr::kable(
+    digits = 3,
+    col.names = c("Term", "Estimate", "P-value")
+  )
+```
+
+Show a plot of model residuals against fitted values.
+
+```{r}
+birthweight %>% 
+  add_predictions(linear_model) %>% 
+  add_residuals(linear_model) %>% 
+  ggplot(aes(x = pred, y = resid, color = resid)) +
+  geom_point(alpha = .3) +
+  labs(
+    x = "Fitted Values of Birth Weight",
+    y = "Residuals",
+    title = "Model Residuals vs Fitted Values of Birth Weight"
+  )
 ```
 
