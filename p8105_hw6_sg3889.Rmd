@@ -54,6 +54,21 @@ weather_df =
 ```
 
 
+```{r}
+weather_df %>% 
+  bootstrap(n = 1000) %>% 
+  mutate(
+    models = map(strap, ~lm(tmax ~ tmin, data = .x) ),
+    results = map(models, broom::glance)) %>% 
+  select(-strap, -models) %>% 
+  unnest(results) %>% 
+  ggplot(aes(x = r.squared)) + 
+  geom_density()
+```
+
+In this example, the $\hat{r}^2$ value is high, and the upper bound at 1 may be a cause for the generally skewed shape of the distribution. If we wanted to construct a confidence interval for $R^2$, we could take the 2.5% and 97.5% quantiles of the estimates across bootstrap samples. However, because the shape isn't symmetric, using the mean +/- 1.96 times the standard error probably wouldn't work well.
+
+
 ## Problem 2
 
 ### Data Cleaning
