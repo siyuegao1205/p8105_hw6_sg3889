@@ -339,7 +339,7 @@ birthweight %>%
   ggplot(aes(x = pred, y = resid, color = resid)) +
   geom_point(alpha = .3) +
   labs(
-    x = "Fitted Values of Birth Weight",
+    x = "Fitted Values of Birth Weight (grams)",
     y = "Residuals",
     color = "Residuals",
     title = "Model Residuals vs Fitted Values of Birth Weight"
